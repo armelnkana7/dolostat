@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<!--begin::Head-->
+
+<head>
+    <base href="{{ url('/') }}" />
+    <title>@yield('title', config('app.name', 'Dolostat'))</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="@yield('meta_description', 'Dolostat - Gestion scolaire simplifiée')" />
+    <meta name="keywords" content="@yield('meta_keywords', 'gestion scolaire, éducation, établissement, classes, programmes')" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:locale" content="{{ config('app.locale', 'fr_FR') }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="@yield('og_title', config('app.name', 'Dolostat'))" />
+    <meta property="og:description" content="@yield('og_description', config('app.name', 'Dolostat') . ' - Gestion scolaire')" />
+    <meta property="og:url" content="{{ url()->current() }}" />
+    <meta property="og:site_name" content="{{ config('app.name', 'Dolostat') }}" />
+    <link rel="canonical" href="{{ url()->current() }}" />
+    <meta name="robots" content="@yield('meta_robots', 'index,follow')" />
+    <meta name="author" content="{{ config('app.name', 'Dolostat') }}" />
+    <meta name="language" content="{{ app()->getLocale() }}" />
+    <meta property="og:image" content="{{ asset('dist/assets/media/misc/saul-welcome.png') }}" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@yield('twitter_title', config('app.name', 'Dolostat'))" />
+    <meta name="twitter:description" content="@yield('twitter_description', 'Gestion scolaire simplifiée')" />
+    <meta name="twitter:image" content="{{ asset('dist/assets/media/misc/saul-welcome.png') }}" />
+    <link rel="alternate" hreflang="{{ app()->getLocale() }}" href="{{ url()->current() }}" />
+    <link rel="alternate" hreflang="x-default" href="{{ url('/') }}" />
+    <link rel="shortcut icon" href="{{ asset('dist/assets/media/logos/favicon.ico') }}" />
+    <!--begin::Fonts(mandatory for all pages)-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
+    <!--end::Fonts-->
+    <!--begin::Vendor Stylesheets(used for this page only)-->
+    <link href="{{ asset('dist/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet"
+        type="text/css" />
+    <link href="{{ asset('dist/assets/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet"
+        type="text/css" />
+    <!-- Flatpickr Date Picker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Toastr Toast Notifications -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <!--end::Vendor Stylesheets-->
+    <!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
+    <link href="{{ asset('dist/assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('dist/assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
+    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+    @livewireStyles
+    <!--end::Global Stylesheets Bundle-->
+    <script>
+        // Frame-busting to prevent site from being loaded within a frame without permission (click-jacking)
+        if (window.top != window.self) {
+            window.top.location.replace(window.self.location.href);
+        }
+    </script>
+    <!-- JSON-LD Organization structured data for SEO -->
+    <script type="application/ld+json">
+        {!! json_encode([
+            "context" => "https://schema.org",
+            "type" => "Organization",
+            "url" => url('/'),
+            "name" => config('app.name', 'Dolostat'),
+            "logo" => asset('dist/assets/media/logos/default.svg'),
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+    </script>
+</head>
+<!--end::Head-->
+<!--begin::Body-->
+
+<body id="kt_app_body" data-kt-app-header-fixed="true" data-kt-app-header-fixed-mobile="true"
+    data-kt-app-sidebar-enabled="true" data-kt-app-sidebar-fixed="true" data-kt-app-sidebar-hoverable="true"
+    data-kt-app-sidebar-push-toolbar="true" data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true"
+    data-kt-app-aside-enabled="true" data-kt-app-aside-fixed="true" data-kt-app-aside-push-toolbar="true"
+    data-kt-app-aside-push-footer="true" class="app-default">
+    <!--begin::Theme mode setup on page load-->
+    <script>
+        var defaultThemeMode = "light";
+        var themeMode;
+        if (document.documentElement) {
+            if (document.documentElement.hasAttribute("data-bs-theme-mode")) {
+                themeMode = document.documentElement.getAttribute("data-bs-theme-mode");
+            } else {
+                if (localStorage.getItem("data-bs-theme") !== null) {
+                    themeMode = localStorage.getItem("data-bs-theme");
+                } else {
+                    themeMode = defaultThemeMode;
+                }
+            }
+            if (themeMode === "system") {
+                themeMode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+            }
+            document.documentElement.setAttribute("data-bs-theme", themeMode);
+        }
+    </script>
+    <!--end::Theme mode setup on page load-->
+    <!--begin::App-->
+    <div class="d-flex flex-column flex-root app-root" id="kt_app_root">
+        <!--begin::Page-->
+        <div class="app-page flex-column flex-column-fluid" id="kt_app_page">
+            <!--begin::Header-->
+            @include('partials.navbar')
+            <!--end::Header-->
+            <!--begin::Wrapper-->
+            <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
+                <!--begin::Sidebar-->
+                @include('partials.sidebar')
+                <!--end::Sidebar-->
+                <!--begin::Main-->
+                <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+                    <!--begin::Content wrapper-->
+                    <div class="d-flex flex-column flex-column-fluid">
+                        <!--begin::Toolbar-->
+                        <div id="kt_app_toolbar" class="app-toolbar pt-5">
+                            <!--begin::Toolbar container-->
+                            <div id="kt_app_toolbar_container"
+                                class="app-container container-fluid d-flex align-items-stretch">
+                                <!--begin::Toolbar wrapper-->
+                                <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
+                                    <!--begin::Page title-->
+                                    <div class="page-title d-flex flex-column gap-1 me-3 mb-2">
+                                        <!--begin::Breadcrumb-->
+                                        <ul class="breadcrumb breadcrumb-separatorless fw-semibold mb-6">
+                                            <!--begin::Item-->
+                                            <li class="breadcrumb-item text-gray-700 fw-bold lh-1">
+                                                <a href="../dist/index.html" class="text-gray-500">
+                                                    <i class="ki-duotone ki-home fs-3 text-gray-400 me-n1"></i>
+                                                </a>
+                                            </li>
+                                            <!--end::Item-->
+                                            <!--begin::Item-->
+                                            <li class="breadcrumb-item">
+                                                <i class="ki-duotone ki-right fs-4 text-gray-700 mx-n1"></i>
+                                            </li>
+                                            <!--end::Item-->
+                                            <!--begin::Item-->
+                                            <li class="breadcrumb-item text-gray-700 fw-bold lh-1">Dashboards</li>
+                                            <!--end::Item-->
+                                            <!--begin::Item-->
+                                            <li class="breadcrumb-item">
+                                                <i class="ki-duotone ki-right fs-4 text-gray-700 mx-n1"></i>
+                                            </li>
+                                            <!--end::Item-->
+                                            <!--begin::Item-->
+                                            <li class="breadcrumb-item text-gray-700">Default</li>
+                                            <!--end::Item-->
+                                        </ul>
+                                        <!--end::Breadcrumb-->
+                                        <!--begin::Title-->
+                                        <h1
+                                            class="page-heading d-flex flex-column justify-content-center text-dark fw-bolder fs-1 lh-0">
+                                            Dashboard</h1>
+                                        <!--end::Title-->
+                                    </div>
+                                    <!--end::Page title-->
+                                    <!--begin::Actions-->
+                                    <a href="#" class="btn btn-sm btn-success ms-3 px-4 py-3"
+                                        data-bs-toggle="modal" data-bs-target="#kt_modal_create_app">Create
+                                        Project</a>
+                                    <!--end::Actions-->
+                                </div>
+                                <!--end::Toolbar wrapper-->
+                            </div>
+                            <!--end::Toolbar container-->
+                        </div>
+                        <!--end::Toolbar-->
+                        <!--begin::Content-->
+                        <div id="kt_app_content" class="app-content flex-column-fluid">
+                            <!--begin::Content container-->
+                            <div id="kt_app_content_container" class="app-container container-fluid">
+                                @yield('content')
+                            </div>
+                            <!--end::Content container-->
+                        </div>
+                        <!--end::Content-->
+                    </div>
+                    <!--end::Content wrapper-->
+                    <!--begin::Footer-->
+                    @include('partials.footer')
+                    <!--end::Footer-->
+                </div>
+                <!--end:::Main-->
+                <!--begin::aside-->
+                <div id="kt_app_aside" class="app-aside flex-column" data-kt-drawer="true"
+                    data-kt-drawer-name="app-aside" data-kt-drawer-activate="{default: true, lg: false}"
+                    data-kt-drawer-overlay="true" data-kt-drawer-width="auto" data-kt-drawer-direction="end"
+                    data-kt-drawer-toggle="#kt_app_aside_mobile_toggle">
+                    <!--begin::Wrapper-->
+                    <div id="kt_app_aside_wrapper"
+                        class="d-flex flex-column align-items-center hover-scroll-y py-5 py-lg-0 gap-4"
+                        data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}"
+                        data-kt-scroll-height="auto" data-kt-scroll-dependencies="#kt_app_header"
+                        data-kt-scroll-wrappers="#kt_app_aside_wrapper" data-kt-scroll-offset="5px">
+                        <a href="#"
+                            class="btn btn-icon btn-color-primary bg-hover-body h-45px w-45px flex-shrink-0 mb-4"
+                            data-bs-toggle="tooltip" title="Calendar" data-bs-custom-class="tooltip-inverse">
+                            <i class="ki-duotone ki-calendar-add fs-2qx">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                                <span class="path5"></span>
+                                <span class="path6"></span>
+                            </i>
+                        </a>
+                        <a href="../dist/account/overview.html"
+                            class="btn btn-icon btn-color-warning bg-hover-body h-45px w-45px flex-shrink-0 mb-4"
+                            data-bs-toggle="tooltip" title="Profile" data-bs-custom-class="tooltip-inverse">
+                            <i class="ki-duotone ki-message-add fs-2qx">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                        </a>
+                        <a href="../dist/apps/ecommerce/catalog/products.html"
+                            class="btn btn-icon btn-color-info bg-hover-body h-45px w-45px flex-shrink-0 mb-4"
+                            data-bs-toggle="tooltip" title="Products" data-bs-custom-class="tooltip-inverse">
+                            <i class="ki-duotone ki-devices-2 fs-2qx">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                        </a>
+                    </div>
+                    <!--end::Wrapper-->
+                </div>
+                <!--end::aside-->
+            </div>
+            <!--end::Wrapper-->
+        </div>
+        <!--end::Page-->
+    </div>
+    <!--begin::Javascript-->
+    <script>
+        var hostUrl = "{{ asset('dist/assets/') }}";
+    </script>
+    <!--begin::Global Javascript Bundle(mandatory for all pages)-->
+    <script src="{{ asset('dist/assets/plugins/global/plugins.bundle.js') }}"></script>
+    <script src="{{ asset('dist/assets/js/scripts.bundle.js') }}"></script>
+    <!--end::Global Javascript Bundle-->
+    <!--begin::Vendors Javascript(used for this page only)-->
+    <script src="{{ asset('dist/assets/plugins/custom/fullcalendar/fullcalendar.bundle.js') }}"></script>
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/radar.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/map.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/geodata/worldLow.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/geodata/continentsLow.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/geodata/usaLow.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/geodata/worldTimeZonesLow.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/geodata/worldTimeZoneAreasLow.js"></script>
+    <script src="{{ asset('dist/assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
+    <!--end::Vendors Javascript-->
+    <!--begin::Custom Javascript(used for this page only)-->
+    <script src="{{ asset('dist/assets/js/widgets.bundle.js') }}"></script>
+    <script src="{{ asset('dist/assets/js/custom/widgets.js') }}"></script>
+    <script src="{{ asset('dist/assets/js/custom/apps/chat/chat.js') }}"></script>
+    <script src="{{ asset('dist/assets/js/custom/utilities/modals/upgrade-plan.js') }}"></script>
+    <script src="{{ asset('dist/assets/js/custom/utilities/modals/create-account.js') }}"></script>
+    <script src="{{ asset('dist/assets/js/custom/utilities/modals/create-app.js') }}"></script>
+    <script src="{{ asset('dist/assets/js/custom/utilities/modals/users-search.js') }}"></script>
+    <!--begin::Flatpickr-->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+    <script>
+        function initializeFlatpickr() {
+            flatpickr('[data-flatpickr]', {
+                locale: 'fr',
+                dateFormat: 'Y-m-d'
+            });
+        }
+
+        // Initial load
+        document.addEventListener('DOMContentLoaded', initializeFlatpickr);
+
+        // Reinitialize after Livewire updates
+        document.addEventListener('livewire:navigated', initializeFlatpickr);
+    </script>
+    <!--end::Flatpickr-->
+    <!--begin::Toastr-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        // Configuration toastr.js globale
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
+        // Écoute les événements Livewire pour exécuter du JavaScript
+        document.addEventListener('execute-js', function(event) {
+            if (event.detail && event.detail.script) {
+                eval(event.detail.script);
+            }
+        });
+
+        // Alternative avec Livewire 3
+        window.addEventListener('execute-js', function(event) {
+            if (event.detail && event.detail.script) {
+                eval(event.detail.script);
+            }
+        });
+    </script>
+    <!--end::Toastr-->
+    @livewireScripts
+    <!--end::Custom Javascript-->
+    <!--end::Javascript-->
+</body>
+<!--end::Body-->
+
+</html>
