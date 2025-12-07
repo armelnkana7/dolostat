@@ -105,7 +105,7 @@ class DatabaseSeeder extends Seeder
                             'academic_year_id' => $academicYear->id,
                         ],
                         [
-                            'volume_horaire' => rand(30, 60),
+                            'nbr_hours' => rand(30, 60),
                             'type_cours' => $this->getRandomCourseType(),
                         ]
                     );

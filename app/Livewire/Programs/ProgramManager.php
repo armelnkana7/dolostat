@@ -69,7 +69,7 @@ class ProgramManager extends Component
                 'nbr_lesson_dig' => $this->nbr_lesson_dig,
                 'nbr_tp' => $this->nbr_tp,
                 'nbr_tp_dig' => $this->nbr_tp_dig,
-            'establishment_id' => auth()->user()->establishment_id,
+                'establishment_id' => auth()->user()->establishment_id,
             ]);
 
             $this->toastSuccess('Programme ajouté avec succès');
@@ -153,9 +153,9 @@ class ProgramManager extends Component
         $query = SchoolClass::query();
 
         // Animateur pédagogique: ses classes seulement
-        if (auth()->user()->hasRole('pedagogical_animator')) {
-            $query->whereHas('programs', function ($q) {
-                $q->where('establishment_id', auth()->user()->establishment_id);
+        if (auth()->user()->hasRole('animator')) {
+            $query->whereHas('programs.subject', function ($q) {
+                $q->where('department_id', auth()->user()->department_id);
             });
         }
         // Censeur: toutes les classes de l'établissement
@@ -171,17 +171,33 @@ class ProgramManager extends Component
 
         $programs = [];
         if ($this->schoolClass) {
-            $programs = $this->schoolClass->programs()
-                ->where('academic_year_id', $this->academicYear->id)
-                ->paginate(10);
+            $programsQuery = $this->schoolClass->programs()
+                ->where('academic_year_id', $this->academicYear->id);
+
+            // If user is animator, filter by department
+            if (auth()->user()->hasRole('animator')) {
+                $programsQuery = $programsQuery->whereHas('subject', function ($q) {
+                    $q->where('department_id', auth()->user()->department_id);
+                });
+            }
+
+            $programs = $programsQuery->paginate(10);
         }
 
-        // dd($classes);
+        // Get subjects available for selection
+        $subjectsQuery = \App\Models\Subject::query();
+
+        // If user is animator, only show their department's subjects
+        if (auth()->user()->hasRole('animator')) {
+            $subjectsQuery = $subjectsQuery->where('department_id', auth()->user()->department_id);
+        }
+
+        $subjects = $subjectsQuery->get();
 
         return view('livewire.programs.program-manager', [
             'classes' => $classes,
             'programs' => $programs,
-            'subjects' => \App\Models\Subject::all(),
+            'subjects' => $subjects,
         ]);
     }
 }

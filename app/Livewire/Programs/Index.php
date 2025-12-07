@@ -52,12 +52,20 @@ class Index extends Component
     public function render()
     {
         $establishmentId = session('establishment_id') ?? auth()->user()?->establishment_id;
+        $departmentId = null;
+
+        // If user has animator role, filter by their department
+        if (auth()->user()->hasRole('animator')) {
+            $departmentId = auth()->user()->department_id;
+        }
+
         $programs = $this->programService->list(
             [
                 'per_page' => $this->perPage,
                 'establishment_id' => $establishmentId,
                 'classe_id' => $this->classe_id,
                 'subject_id' => $this->subject_id,
+                'department_id' => $departmentId,
             ],
             ['establishment', 'schoolClass', 'subject', 'subject.department']
         );

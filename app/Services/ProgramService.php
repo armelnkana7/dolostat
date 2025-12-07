@@ -36,6 +36,13 @@ class ProgramService
             $query = $query->where('subject_id', $filters['subject_id']);
         }
 
+        // Filter by department: get programs whose subject belongs to the department
+        if (!empty($filters['department_id'])) {
+            $query = $query->whereHas('subject', function ($q) use ($filters) {
+                $q->where('department_id', $filters['department_id']);
+            });
+        }
+
         return $query->paginate($filters['per_page'] ?? 15);
     }
 

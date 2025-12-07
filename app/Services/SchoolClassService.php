@@ -33,8 +33,11 @@ class SchoolClassService
             $query = $query->where('name', 'like', "%{$search}%");
         }
 
+        // Filter by department: get classes that have programs with subjects in the department
         if (!empty($filters['department_id'])) {
-            $query = $query->where('department_id', $filters['department_id']);
+            $query = $query->whereHas('programs.subject', function ($q) use ($filters) {
+                $q->where('department_id', $filters['department_id']);
+            })->distinct();
         }
 
         return $query->paginate($filters['per_page'] ?? 15);

@@ -32,26 +32,21 @@ class WeeklyCoverageReportSeeder extends Seeder
         foreach ($programs as $program) {
             // Create 8-12 weekly reports per program (roughly 2-3 months of data)
             for ($i = 0; $i < rand(8, 12); $i++) {
-                $totalPlanned = $program->volume_horaire ?? 50;
+                $totalPlanned = $program->nbr_hours ?? 50;
                 $hoursProgress = ($i / 12) * $totalPlanned; // Gradually progress coverage
-
-                $coverage = min(($hoursProgress / $totalPlanned) * 100, 100);
 
                 WeeklyCoverageReport::firstOrCreate(
                     [
                         'program_id' => $program->id,
                         'recorded_by_user_id' => $user->id,
-                        'week' => $i + 1,
+                        'establishment_id' => $establishment->id,
                     ],
                     [
-                        'establishment_id' => $establishment->id,
                         'nbr_hours_done' => max(0, (int)$hoursProgress),
                         'nbr_lesson_done' => max(0, rand((int)($hoursProgress / 5), (int)($hoursProgress / 3))),
                         'nbr_lesson_dig_done' => max(0, rand(0, (int)($hoursProgress / 10))),
                         'nbr_tp_done' => max(0, rand(0, (int)($hoursProgress / 15))),
                         'nbr_tp_dig_done' => max(0, rand(0, (int)($hoursProgress / 20))),
-                        'coverage_percentage' => round($coverage, 2),
-                        'observations' => fake()->sentence(),
                         'created_at' => now()->subWeeks($i),
                         'updated_at' => now()->subWeeks($i),
                     ]

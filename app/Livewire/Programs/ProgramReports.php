@@ -36,12 +36,14 @@ class ProgramReports extends Component
     {
         $userRole = auth()->user()->roles->first()?->name;
 
-        // Si c'est un pédagogue, charger ses départements
-        if ($userRole === 'pedagogical_animator') {
-            // Charger les programmes des classes du département de l'utilisateur
-            $this->programs = Program::whereHas('schoolClass', function ($query) {
+        // Si c'est un animateur, charger ses départements
+        if ($userRole === 'animator') {
+            // Charger les programmes des classes avec des subjects du département de l'utilisateur
+            $this->programs = Program::whereHas('subject', function ($query) {
                 $query->where('department_id', auth()->user()->department_id);
-            })->with(['schoolClass', 'subject', 'subject.department'])->get();
+            })->with(['schoolClass', 'subject', 'subject.department'])
+                ->where('establishment_id', auth()->user()->establishment_id)
+                ->get();
         } else {
             // Pour l'admin et le censeur, charger tous les programmes de l'établissement
             $this->programs = Program::where('establishment_id', auth()->user()->establishment_id)

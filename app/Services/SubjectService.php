@@ -24,6 +24,11 @@ class SubjectService
             $query = $query->where('establishment_id', $establishmentId);
         }
 
+        // Filter by department if provided (especially for animator role)
+        if (!empty($filters['department_id'])) {
+            $query = $query->where('department_id', $filters['department_id']);
+        }
+
         if (!empty($withRelations)) {
             $query = $query->with($withRelations);
         }

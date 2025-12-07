@@ -21,11 +21,11 @@
             <label for="department_id" class="form-label">Niveau</label>
             <select id="department_id" wire:model="level" class="form-select @error('level') is-invalid @enderror">
                 <option value="">-- Sélectionner --</option>
-                <option value="1">Niveau 1</option>
-                <option value="2">Niveau 2</option>
-                <option value="3">Niveau 3</option>
-                <option value="4">Niveau 4</option>
-                <option value="5">Niveau 5</option>
+                <option value="Niveau 1">Niveau 1</option>
+                <option value="Niveau 2">Niveau 2</option>
+                <option value="Niveau 3">Niveau 3</option>
+                <option value="Niveau 4">Niveau 4</option>
+                <option value="Niveau 5">Niveau 5</option>
             </select>
             @error('department_id')
                 <div class="invalid-feedback">{{ $message }}</div>

@@ -50,6 +50,11 @@ class Form extends Component
                 $this->selectedSubjects = $department->subjects()
                     ->pluck('id')
                     ->toArray();
+                $this->availableSubjects = Subject::where('establishment_id', $this->establishment_id)
+                    ->where('department_id', $id)
+                    ->orwhere('department_id', null)
+                    ->pluck('name', 'id')
+                    ->toArray();
             }
         }
     }
@@ -59,10 +64,7 @@ class Form extends Component
         // Charger toutes les matières de l'établissement qui ne sont pas assignées à d'autres départements
         // ou les matières assignées au département courant (en édition)
         $this->availableSubjects = Subject::where('establishment_id', $this->establishment_id)
-            ->where(function ($query) {
-                $query->whereNull('department_id')
-                    ->orWhere('department_id', $this->departmentId);
-            })
+            ->where('department_id', null)
             ->pluck('name', 'id')
             ->toArray();
     }
@@ -122,6 +124,7 @@ class Form extends Component
 
     public function render()
     {
+        // dd($this->availableSubjects);
         return view('livewire.departments.form', [
             'availableSubjects' => $this->availableSubjects,
         ]);

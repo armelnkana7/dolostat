@@ -24,9 +24,12 @@ class CoverageReportViewExport implements FromView, WithEvents, WithTitle, Shoul
     public function view(): View
     {
         // Sélectionner la vue appropriée selon le type d'export
-        $viewName = $this->exportType === 'department'
-            ? 'exports.coverage-report-by-department'
-            : 'exports.coverage-report-by-class';
+        $viewName = match ($this->exportType) {
+            'department' => 'exports.coverage-report-by-department',
+            'subject' => 'exports.coverage-report-by-subject',
+            'global' => 'exports.coverage-report-by-class',
+            default => 'exports.coverage-report-by-class',
+        };
 
         return view($viewName, [
             'data' => $this->data,

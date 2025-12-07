@@ -80,7 +80,14 @@ class Form extends Component
 
     public function render()
     {
-        $departments = Department::where('establishment_id', $this->establishment_id)->get();
+        $departmentsQuery = Department::where('establishment_id', $this->establishment_id);
+
+        // If user has animator role, only show their department
+        if (auth()->user()->hasRole('animator')) {
+            $departmentsQuery = $departmentsQuery->where('id', auth()->user()->department_id);
+        }
+
+        $departments = $departmentsQuery->get();
         return view('livewire.subjects.form', compact('departments'));
     }
 }

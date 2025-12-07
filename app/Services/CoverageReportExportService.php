@@ -14,6 +14,7 @@ class CoverageReportExportService
 {
     /**
      * Exporte les rapports en CSV
+     * $exportType : 'class', 'department', 'subject' ou 'global'
      */
     public function exportToCsv($data, $exportType = 'class')
     {
@@ -56,7 +57,7 @@ class CoverageReportExportService
 
     /**
      * Exporte les rapports en Excel
-     * $exportType : 'class' ou 'department'
+     * $exportType : 'class', 'department', 'subject' ou 'global'
      */
     public function exportToExcel($data, $exportType = 'class')
     {
@@ -70,7 +71,7 @@ class CoverageReportExportService
 
     /**
      * Exporte les rapports en PDF
-     * $exportType : 'class' ou 'department'
+     * $exportType : 'class', 'department', 'subject' ou 'global'
      */
     public function exportToPdf($data, $exportType = 'class')
     {
@@ -78,9 +79,12 @@ class CoverageReportExportService
 
         try {
             // Sélectionner la vue appropriée selon le type d'export
-            $viewName = $exportType === 'department'
-                ? 'exports.coverage-report-pdf-department'
-                : 'exports.coverage-report-pdf-class';
+            $viewName = match ($exportType) {
+                'department' => 'exports.coverage-report-pdf-department',
+                'subject' => 'exports.coverage-report-pdf-subject',
+                'global' => 'exports.coverage-report-pdf-class',
+                default => 'exports.coverage-report-pdf-class',
+            };
 
             $html = view($viewName, [
                 'data' => $data,

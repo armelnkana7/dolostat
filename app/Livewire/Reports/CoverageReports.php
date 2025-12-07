@@ -31,13 +31,20 @@ class CoverageReports extends Component
     public function render()
     {
         try {
+            // If user is animator, filter by their department
+            $departmentId = null;
+            if (auth()->user()->hasRole('animator')) {
+                $departmentId = auth()->user()->department_id;
+            }
+
             $data = match ($this->filterType) {
-                'class' => $this->reportService->getCoverageByClass($this->filterId),
-                'department' => $this->reportService->getCoverageByDepartment($this->filterId),
+                'class' => $this->reportService->getCoverageByClass($this->filterId, $departmentId),
+                'department' => $this->reportService->getCoverageByDepartment($this->filterId, $departmentId),
+                'subject' => $this->reportService->getCoverageBySubject($this->filterId, $departmentId),
                 default => collect([]),
             };
 
-            $global = $this->reportService->getGlobalCoverage();
+            $global = $this->reportService->getGlobalCoverage($departmentId);
 
             // Ensure global has all required keys with default values
             $global = array_merge([

@@ -51,11 +51,19 @@ class Index extends Component
     public function render()
     {
         $establishmentId = session('establishment_id') ?? auth()->user()?->establishment_id;
+        $departmentId = null;
+
+        // If user has animator role, filter by their department
+        if (auth()->user()->hasRole('animator')) {
+            $departmentId = auth()->user()->department_id;
+        }
+
         $subjects = $this->subjectService->list(
             [
                 'search' => $this->search,
                 'per_page' => $this->perPage,
                 'establishment_id' => $establishmentId,
+                'department_id' => $departmentId,
             ],
             ['establishment', 'department']
         );

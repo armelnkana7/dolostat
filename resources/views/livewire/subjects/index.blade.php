@@ -8,12 +8,12 @@
     ])
 
     <div wire:loading>@include('components.loading-indicator')</div>
-    <div class="mb-4 d-flex justify-content-between align-items-center">
+    {{-- <div class="mb-4 d-flex justify-content-between align-items-center">
         <h2 class="h4">Matières</h2>
         <a href="{{ route('subjects.create') }}" class="btn btn-primary">
             Ajouter
         </a>
-    </div>
+    </div> --}}
 
     <div class="mb-4">
         <input type="text" wire:model.live="search" placeholder="Rechercher..." class="form-control">

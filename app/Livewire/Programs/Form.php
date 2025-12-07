@@ -40,7 +40,7 @@ class Form extends Component
 
         // Ajouter une validation unique pour éviter les doublons
         // La contrainte unique porte sur (establishment_id, classe_id, subject_id, academic_year_id)
-        $academicYearId = session('academic_year_id') ?? \App\Helpers\AcademicYearHelper::getCurrent()->id;
+        $academicYearId = session('academic_year_id') ?? \App\Helpers\AcademicYearHelper::getCurrentAcademicYear()->id;
 
         $uniqueRule = \Illuminate\Validation\Rule::unique('programs')
             ->where('establishment_id', $this->establishment_id)
@@ -116,10 +116,33 @@ class Form extends Component
 
     public function render()
     {
-        $classes = SchoolClass::where('establishment_id', $this->establishment_id)->get();
-        $subjects = Subject::where('establishment_id', $this->establishment_id)
-            ->with('department')
-            ->get();
+        $establishmentId = $this->establishment_id;
+        $departmentId = null;
+
+        // If user has animator role, filter by their department
+        if (auth()->user()->hasRole('animator')) {
+            $departmentId = auth()->user()->department_id;
+        }
+
+        $classQuery = SchoolClass::where('establishment_id', $establishmentId);
+
+        // If user is animator, only show classes that have programs with their department's subjects
+        // if ($departmentId) {
+        //     $classQuery = $classQuery->whereHas('programs.subject', function ($q) use ($departmentId) {
+        //         $q->where('department_id', $departmentId);
+        //     })->distinct();
+        // }
+
+        $classes = $classQuery->get();
+
+        $subjectQuery = Subject::where('establishment_id', $establishmentId);
+
+        // If user is animator, only show subjects from their department
+        if ($departmentId) {
+            $subjectQuery = $subjectQuery->where('department_id', $departmentId);
+        }
+
+        $subjects = $subjectQuery->with('department')->get();
 
         return view('livewire.programs.form', compact('classes', 'subjects'));
     }

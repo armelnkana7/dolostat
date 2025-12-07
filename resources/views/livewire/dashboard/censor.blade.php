@@ -43,7 +43,7 @@
 
         <!-- Total Reports -->
         <div class="col-md-6 col-xl-3">
-            <a href="{{ route('weekly-coverage.index') }}" class="card bg-light-info text-hover-info shadow-sm">
+            <a href="{{ route('reports.coverage') }}" class="card bg-light-info text-hover-info shadow-sm">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <i class="ki-duotone ki-chart-line fs-2hx text-info"><span class="path1"></span><span
@@ -186,7 +186,7 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="{{ route('subjects.show', $report->program->subject) }}"
+                                    <a href="{{ route('subjects.edit', $report->program->subject) }}"
                                         class="text-gray-800 text-hover-primary fw-bold">
                                         {{ $report->program->subject->name ?? 'N/A' }}
                                     </a>

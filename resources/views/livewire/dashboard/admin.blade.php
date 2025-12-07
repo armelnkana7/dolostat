@@ -148,7 +148,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <a href="{{ route('subjects.show', $report->program->subject) }}"
+                                    <a href="{{ route('subjects.edit', $report->program->subject) }}"
                                         class="text-gray-800 text-hover-primary fw-bold">
                                         {{ $report->program->subject->name ?? 'N/A' }}
                                     </a>

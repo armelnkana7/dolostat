@@ -67,11 +67,17 @@ class ReportController extends Controller
         $filterType = $request->query('filter_type');
         $filterId   = $request->query('filter_id');
 
+        // If user is animator, filter by their department
+        $departmentId = null;
+        if (auth()->user()->hasRole('animator')) {
+            $departmentId = auth()->user()->department_id;
+        }
+
         $data = match ($filterType) {
-            'class' => $this->reportService->getCoverageByClass($filterId),
-            'department' => $this->reportService->getCoverageByDepartment($filterId),
-            'subject' => $this->reportService->getCoverageBySubject($filterId),
-            'global' => [$this->reportService->getGlobalCoverage()],
+            'class' => $this->reportService->getCoverageByClass($filterId, $departmentId),
+            'department' => $this->reportService->getCoverageByDepartment($filterId, $departmentId),
+            'subject' => $this->reportService->getCoverageBySubject($filterId, $departmentId),
+            'global' => [$this->reportService->getGlobalCoverage($departmentId)],
             default => [],
         };
 
@@ -87,11 +93,17 @@ class ReportController extends Controller
         $filterType = $request->query('filter_type');
         $filterId   = $request->query('filter_id');
 
+        // If user is animator, filter by their department
+        $departmentId = null;
+        if (auth()->user()->hasRole('animator')) {
+            $departmentId = auth()->user()->department_id;
+        }
+
         $data = match ($filterType) {
-            'class' => $this->reportService->getCoverageByClass($filterId),
-            'department' => $this->reportService->getCoverageByDepartment($filterId),
-            'subject' => $this->reportService->getCoverageBySubject($filterId),
-            'global' => [$this->reportService->getGlobalCoverage()],
+            'class' => $this->reportService->getCoverageByClass($filterId, $departmentId),
+            'department' => $this->reportService->getCoverageByDepartment($filterId, $departmentId),
+            'subject' => $this->reportService->getCoverageBySubject($filterId, $departmentId),
+            'global' => [$this->reportService->getGlobalCoverage($departmentId)],
             default => [],
         };
 
@@ -111,11 +123,17 @@ class ReportController extends Controller
         $filterType = $request->query('filter_type');
         $filterId   = $request->query('filter_id');
 
+        // If user is animator, filter by their department
+        $departmentId = null;
+        if (auth()->user()->hasRole('animator')) {
+            $departmentId = auth()->user()->department_id;
+        }
+
         $data = match ($filterType) {
-            'class' => $this->reportService->getCoverageByClass($filterId),
-            'department' => $this->reportService->getCoverageByDepartment($filterId),
-            'subject' => $this->reportService->getCoverageBySubject($filterId),
-            'global' => [$this->reportService->getGlobalCoverage()],
+            'class' => $this->reportService->getCoverageByClass($filterId, $departmentId),
+            'department' => $this->reportService->getCoverageByDepartment($filterId, $departmentId),
+            'subject' => $this->reportService->getCoverageBySubject($filterId, $departmentId),
+            'global' => [$this->reportService->getGlobalCoverage($departmentId)],
             default => [],
         };
 

@@ -48,7 +48,9 @@ class SchoolClass extends Model
             Program::class,
             'classe_id',
             'program_id'
-        );
+        )->select('weekly_coverage_reports.*')
+            ->withoutGlobalScope(\App\Models\Scopes\AcademicYearScope::class)
+            ->where('weekly_coverage_reports.establishment_id', $this->establishment_id);
     }
 
     /**
