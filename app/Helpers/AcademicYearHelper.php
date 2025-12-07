@@ -25,10 +25,17 @@ class AcademicYearHelper
             }
         }
 
-        // 2. Si pas d'établissement fourni, utiliser celui de la session
-        $establishmentId = $establishmentId ?? auth()->user()->establishment_id;
+        // 2. Si pas d'établissement fourni, vérifier si un utilisateur est authentifié
+        if (!$establishmentId && auth()->check()) {
+            $establishmentId = auth()->user()->establishment_id;
+        }
 
-        // 3. Chercher une année active
+        // 3. Si toujours pas d'établissement, retourner null (cas du seeding)
+        if (!$establishmentId) {
+            return null;
+        }
+
+        // 4. Chercher une année active
         $activeYear = AcademicYear::query()
             ->forEstablishment($establishmentId)
             ->active()
@@ -38,8 +45,12 @@ class AcademicYearHelper
             return $activeYear;
         }
 
-        $establishment = Establishment::find(auth()->user()->establishment_id);
-        // 4. Chercher par date courante (start_date <= aujourd'hui <= end_date)
+        $establishment = Establishment::find($establishmentId);
+        if (!$establishment) {
+            return null;
+        }
+
+        // 5. Chercher par date courante (start_date <= aujourd'hui <= end_date)
         $today = Carbon::today();
         $currentYear = AcademicYear::findOrFail($establishment->academic_year_id);
 

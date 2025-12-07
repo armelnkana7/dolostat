@@ -106,7 +106,6 @@ class DatabaseSeeder extends Seeder
                         ],
                         [
                             'nbr_hours' => rand(30, 60),
-                            'type_cours' => $this->getRandomCourseType(),
                         ]
                     );
                 }
@@ -152,14 +151,5 @@ class DatabaseSeeder extends Seeder
         }
 
         return $subjects;
-    }
-
-    /**
-     * Get a random course type
-     */
-    private function getRandomCourseType()
-    {
-        $types = ['lesson', 'lesson_dig', 'tp', 'tp_dig'];
-        return $types[array_rand($types)];
     }
 }

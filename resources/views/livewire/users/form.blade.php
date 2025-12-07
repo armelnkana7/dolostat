@@ -6,7 +6,7 @@
     ])
     <!--end::Page Toolbar-->
 
-    <form wire:submit="save" class="card p-4" style="max-width: 600px;">
+    <form wire:submit="save" class="card p-4 w-100">
         @csrf
 
         <div class="mb-3">
@@ -72,6 +72,19 @@
                     <option value="{{ $dept->id }}">{{ $dept->name }}</option>
                 @endforeach
             </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="role_id" class="form-label">Rôle</label>
+            <select id="role_id" wire:model="role_id" class="form-select @error('role_id') is-invalid @enderror">
+                <option value="">-- Sélectionner un rôle --</option>
+                @foreach ($roles as $role)
+                    <option value="{{ $role->id }}">{{ $role->name }}</option>
+                @endforeach
+            </select>
+            @error('role_id')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="d-flex gap-2">

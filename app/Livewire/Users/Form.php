@@ -6,6 +6,7 @@ use App\Models\Department;
 use App\Models\Establishment;
 use App\Services\UserService;
 use Livewire\Component;
+use Spatie\Permission\Models\Role;
 
 /**
  * Users Form Component
@@ -15,6 +16,7 @@ class Form extends Component
     public $userId = null;
     public $establishment_id = null;
     public $department_id = null;
+    public $role_id = null;
     public $name = '';
     public $username = '';
     public $email = '';
@@ -32,6 +34,7 @@ class Form extends Component
                 'password' => 'nullable|string|min:8|confirmed',
                 'establishment_id' => 'required|exists:establishments,id',
                 'department_id' => 'nullable|exists:departments,id',
+                'role_id' => 'nullable|exists:roles,id',
             ];
         }
 
@@ -42,6 +45,7 @@ class Form extends Component
             'password' => 'required|string|min:8|confirmed',
             'establishment_id' => 'required|exists:establishments,id',
             'department_id' => 'nullable|exists:departments,id',
+            'role_id' => 'nullable|exists:roles,id',
         ];
     }
 
@@ -60,6 +64,11 @@ class Form extends Component
                 $this->name = $user->name;
                 $this->username = $user->username;
                 $this->email = $user->email;
+                // Load the user's primary role if any
+                $userRole = $user->roles()->first();
+                if ($userRole) {
+                    $this->role_id = $userRole->id;
+                }
             }
         }
     }
@@ -81,10 +90,24 @@ class Form extends Component
         }
 
         if ($this->userId) {
-            $service->update($this->userId, $data);
+            $user = $service->update($this->userId, $data);
+            // Update role if provided
+            if ($this->role_id) {
+                $role = Role::find($this->role_id);
+                if ($role) {
+                    $user->syncRoles([$role]);
+                }
+            }
             $this->dispatch('notify', message: 'Utilisateur mis à jour avec succès');
         } else {
-            $service->create($data);
+            $user = $service->create($data);
+            // Assign role if provided
+            if ($this->role_id) {
+                $role = Role::find($this->role_id);
+                if ($role) {
+                    $user->assignRole($role);
+                }
+            }
             $this->dispatch('notify', message: 'Utilisateur créé avec succès');
         }
 
@@ -95,7 +118,8 @@ class Form extends Component
     {
         $establishments = Establishment::all();
         $departments = Department::where('establishment_id', $this->establishment_id)->get();
+        $roles = Role::where('name', '!=', 'admin')->get();
 
-        return view('livewire.users.form', compact('establishments', 'departments'));
+        return view('livewire.users.form', compact('establishments', 'departments', 'roles'));
     }
 }
